@@ -1,0 +1,62 @@
+// p37
+// ★ 의존성 코드는 특정 버전을 명시하면 안된다. 그래야 버전 관리가 한 곳에 집중되어 충돌 문제가 개선됨. 자동관리
+// ㄴ classpath의    org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}   에서
+
+buildscript{
+    ext{    // 전역변수를 설정하겠다는 의미.
+        springBootVersion = '2.1.7.RELEASE'     // 해당 버전을 의존성으로 받겠다.
+    }
+    repositories{       // 각종 의존성(라이브러리) 들을 ★어떤 원격 저장소에서 받을지를 정함.
+        mavenCentral()  // 기존에 많이 사용 BUT 라이브러리 업로드 난이도(설정 과정 多)
+        jcenter()       // ㄴ jcenter는 이런 문제를 개선. jcenter에서 업로드시 mavenCentral도 업로드가능
+    }
+    dependencies{   // 프로젝트 개발에 필요한 의존성들을 선언하는 곳임.
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+// 아래 4가지 플러그인은 필수 추가.
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management' // 스프링부트의 의존성들을 관리해주는 플러그인.
+
+group 'com.jojoldu.book'
+version '1.0-SNAPSHOT'
+soureCompatibility = 1.8
+
+repositories{
+    mavenCentral()
+}
+
+dependencies{ // gradle 실행시 이 두개와 관련된 라이브러리들을 받음.
+    compile('org.springframework.boot:spring-boot-starter-web')     // 자동완성을 쓰면 끝에 : 가 붙는데, 이렇게 버전을 직접 명시하면 안된다.
+    testCompile('org.springframework.boot:spring-boot-starter-test')// 직접 명시하지않아야 classpath에서 자동으로 버전관리를 해주어 충돌 X
+}
+
+// 모두 작성하고 나면 > gradle 업데이트 한 후, 깃에 적용한다.
+// Ctrl + Shift + A (Action검색창) > share project on github 검색
+
+
+/*
+// 기존 설정
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+*/
